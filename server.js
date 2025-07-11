@@ -1,20 +1,25 @@
-/*import { createServer } from 'node:http'
-
-const server = createServer((request, response) => {
-    response.write('oi')
-    return response.end()
-})
-
-server.listen(3333)*/
+import { title } from 'node:process'
+import { DatabaseMemory } from './databasememory.js'
 
 import { fastify } from 'fastify' //importa a o miniframework para criação do servidor
+import { describe } from 'node:test'
 
 const server = fastify() //seta a variavel o qual chamará o framework^
 
+const database = new DatabaseMemory()
+
 //GET, POST, PUT, DELETE, PATH(faz uma alteração específica de um recurso)
 
-server.post('/videos', () => {
-    return 'Hello World'     //Quando o usuário solicitar POST http://localhost:3333/videos ele criará um video
+server.post('/videos', (request, reply) => {  //Quando o usuário solicitar POST http://localhost:3333/videos ele criará um video
+    database.create({
+        title:'Video 01',
+        description:'esse é o vídeo 01',
+        duration:180,
+    })    
+
+    console.log(database.list())
+
+    return reply.status(201).send()
 })
 
 server.get('/videos', () => {
